@@ -1,21 +1,14 @@
-#include "CQnxResMgrImpl.hpp"
-#include "CResourceManager.hpp"
+#include <sys/iofunc.h>
+#include <sys/dispatch.h>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <stdio.h>
 
 #define READ_WRITE_ACCESS 0x0666
-
-/* */
-/*
 #define FILE_ATTACHED "/dev/sample"
-#define PRINT_FUNC_NAME fprintf(stdout, __FUNCTION__)
-
-//inline static void print(const char* s) {
-//	fprintf(stdout, __FUNCTION__);
-//	//fflush(stdout);
-//}
 
 extern char* __progname;
-//std::vector<uint8_t> buf;
-//std::string buf;
 char buf[20];
 
 static int	my_io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE_T *handle, void *extra) {
@@ -160,15 +153,4 @@ int main() {
 
 	return 0;
 }
-*/
 
-int main() {
-    CQnxResMgrImpl qnxResMgr;
-    CResourceManager resmgr(qnxResMgr);
-
-    //call blocked mehtod
-    resmgr.run("/dev/sample", READ_WRITE_ACCESS);
-    //normally never execute code after line above
-
-    return 0;
-}
