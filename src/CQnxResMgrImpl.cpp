@@ -1,28 +1,41 @@
-#include "CQnxResMgrImpl.hpp"
-#include "CResourceManager.hpp"
-
-#define READ_WRITE_ACCESS 0x0666
-
-/* */
 /*
-#define FILE_ATTACHED "/dev/sample"
-#define PRINT_FUNC_NAME fprintf(stdout, __FUNCTION__)
+ * CQnxResMgrImpl.cpp
+ *
+ *  Created on: Dec 23, 2018
+ *      Author: YMLADENO
+ */
 
-//inline static void print(const char* s) {
-//	fprintf(stdout, __FUNCTION__);
-//	//fflush(stdout);
-//}
+#include "CQnxResMgrImpl.hpp"
+#include <cstdlib>
 
-extern char* __progname;
-//std::vector<uint8_t> buf;
-//std::string buf;
-char buf[20];
+char CQnxResMgrImpl::buf[20];
 
-static int	my_io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE_T *handle, void *extra) {
+CQnxResMgrImpl::CQnxResMgrImpl()
+: dpp(nullptr) {
+    if ((dpp = dispatch_create()) == NULL) {
+        //fprintf(stderr, "%s: Unable to allocate dispatch context.\n", __progname);
+        //throw return EXIT_FAILURE;
+    }
+}
+
+CQnxResMgrImpl::~CQnxResMgrImpl() = default;
+
+void CQnxResMgrImpl::run(const std::string& path, const uint16_t amode) {
+    resmgr_data_t resmgr_data;
+
+    //init structure
+    init(amode, resmgr_data);
+    //register to Process Manager
+    attach(path, resmgr_data);
+    //wait for msg
+    loop();
+}
+
+int CQnxResMgrImpl::io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE_T *handle, void *extra) {
     return iofunc_open_default(ctp, msg, handle, extra);
 }
 
-static int my_io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb) {
+int CQnxResMgrImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb) {
     int status;
     int nleft;
     int off;
@@ -49,10 +62,8 @@ static int my_io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb) 
     }
 
     //how many bytes are left
-    //nleft = strlen(buf) - off;
     nleft = strlen(buf) - off;
     ocb->offset += nleft;
-    //ocb->attr->nbytes -= nleft;
 
     //number of bytes returning to the client
     nbytes = std::min<int>(nleft, _IO_READ_GET_NBYTES(msg));
@@ -70,13 +81,13 @@ static int my_io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb) 
     return (_RESMGR_NOREPLY);
 }
 
-static int my_io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb) {
-	int status;
-	size_t nbytes;
+int CQnxResMgrImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb) {
+    int status;
+    size_t nbytes;
 
     //verify writing permissions
     if ((status = iofunc_write_verify(ctp, msg, ocb, NULL)) != EOK) {
-    	return (status);
+        return (status);
     }
 
     //verify the type of input msg
@@ -108,44 +119,47 @@ static int my_io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb
     return (_RESMGR_NPARTS(0));
 }
 
-int main() {
-    dispatch_t *dpp;
-    dispatch_context_t *ctp;
-    resmgr_attr_t resmgr_attr;
-    resmgr_connect_funcs_t connect_func;
-    resmgr_io_funcs_t io_func;
-    iofunc_attr_t attr;
+std::string CQnxResMgrImpl::read() {
+    return "";
+}
 
-    if ((dpp = dispatch_create()) == NULL) {
-        fprintf(stderr, "%s: Unable to allocate dispatch context.\n", __progname);
-        return EXIT_FAILURE;
-    }
+void CQnxResMgrImpl::write(std::string& s) {
 
-    iofunc_func_init(_RESMGR_CONNECT_NFUNCS, &connect_func, _RESMGR_IO_NFUNCS, &io_func);
-    iofunc_attr_init(&attr, S_IFNAM | 0666, 0, 0);
+}
 
-    memset(&resmgr_attr, 0, sizeof (resmgr_attr));
-    resmgr_attr.nparts_max = 1;
-    resmgr_attr.msg_max_size = 2048;
+
+void CQnxResMgrImpl::init(const uint16_t& amode, resmgr_data_t& r) {
+    iofunc_func_init(_RESMGR_CONNECT_NFUNCS, &r.connect_func, _RESMGR_IO_NFUNCS, &r.io_func);
+    iofunc_attr_init(&r.attr, S_IFNAM | amode, 0, 0);
+
+    memset(&r.resmgr_attr, 0, sizeof (r.resmgr_attr));
+    r.resmgr_attr.nparts_max = 1;
+    r.resmgr_attr.msg_max_size = 2048;
 
     //add my own functions
-    connect_func.open = my_io_open;
-    io_func.read = my_io_read;
-    io_func.write = my_io_write;
+    r.connect_func.open = io_open;
+    r.io_func.read = io_read;
+    r.io_func.write = io_write;
+}
+
+void CQnxResMgrImpl::attach(const std::string& path, resmgr_data_t& r) {
 
     //attach device name
     if (-1 == resmgr_attach(dpp,
-                            &resmgr_attr,
-                            FILE_ATTACHED,
+                            &r.resmgr_attr,
+                            path.c_str(),
                             _FTYPE_ANY,     // accepts any type of open request
                             0,              // accepts only requests for /dev/sample
-                            &connect_func,
-                            &io_func,
-                            &attr)) {
-        fprintf(stderr, "%s: Unable to attach name.\n", FILE_ATTACHED);
-        return EXIT_FAILURE;
+                            &r.connect_func,
+                            &r.io_func,
+                            &r.attr)) {
+        fprintf(stderr, "%s: Unable to attach name.\n", path.c_str());
+        //return EXIT_FAILURE;
     }
+}
 
+
+void CQnxResMgrImpl::loop() {
     //allocate context structure
     ctp = dispatch_context_alloc(dpp);
 
@@ -153,22 +167,8 @@ int main() {
     while(1) {
         if ((ctp = dispatch_block(ctp)) == NULL) {
             fprintf(stderr, "block error\n");
-            return EXIT_FAILURE;
+            //return EXIT_FAILURE;
         }
         dispatch_handler(ctp);
     }
-
-	return 0;
-}
-*/
-
-int main() {
-    CQnxResMgrImpl qnxResMgr;
-    CResourceManager resmgr(qnxResMgr);
-
-    //call blocked mehtod
-    resmgr.run("/dev/sample", READ_WRITE_ACCESS);
-    //normally never execute code after line above
-
-    return 0;
 }

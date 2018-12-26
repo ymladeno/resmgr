@@ -1,4 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 
 add_executable(resmgr 
-               ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+               ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManager.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/CQnxResMgrImpl.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManagerImpl.cpp)
