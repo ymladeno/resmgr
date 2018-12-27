@@ -8,7 +8,7 @@
 #include "CQnxResMgrImpl.hpp"
 #include <cstdlib>
 
-char CQnxResMgrImpl::buf[20];
+CQnxResMgrImpl::buffer_t CQnxResMgrImpl::buf;
 
 CQnxResMgrImpl::CQnxResMgrImpl()
 : dpp(nullptr) {
@@ -62,7 +62,7 @@ int CQnxResMgrImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T 
     }
 
     //how many bytes are left
-    nleft = strlen(buf) - off;
+    nleft = buf.size() - off;
     ocb->offset += nleft;
 
     //number of bytes returning to the client
@@ -70,7 +70,7 @@ int CQnxResMgrImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T 
 
     //if returning data, write it to client
     if (nbytes) {
-        MsgReply(ctp->rcvid, nbytes, buf, nbytes);
+        MsgReply(ctp->rcvid, nbytes, static_cast<void*>(&buf.at(0)), nbytes);
     }
     else {
         //do not return data, just unblock client
@@ -104,13 +104,16 @@ int CQnxResMgrImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_
         return EBADMSG;
     }
 
+    //resize buffer
+    buf.resize(nbytes);
+
     //Set up the number of bytes returned by client's write()
     _IO_SET_WRITE_NBYTES(ctp, nbytes);
 
     //Reread data from the sender's data buffer
-    resmgr_msgread(ctp, buf, nbytes, sizeof(msg->i));
-    buf[nbytes] = '\0'; //NULL terminated string
-    fprintf(stdout, "Received %d bytes = %s\n", nbytes, buf);
+    resmgr_msgread(ctp, static_cast<void*>(&buf.at(0)), nbytes, sizeof(msg->i));
+    //buf[nbytes] = '\0'; //NULL terminated string
+    fprintf(stdout, "Received %d bytes = %s\n", nbytes, buf.c_str());
 
     if (nbytes > 0) {
         ocb->attr->flags |= IOFUNC_ATTR_MTIME | IOFUNC_ATTR_CTIME;

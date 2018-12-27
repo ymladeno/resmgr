@@ -11,6 +11,7 @@
 #include "CResourceManagerImpl.hpp"
 #include <sys/iofunc.h>
 #include <sys/dispatch.h>
+#include <vector>
 
 class CQnxResMgrImpl: public CResourceManagerImpl {
 private:
@@ -23,6 +24,8 @@ private:
     using resmgr_data_t = _resmgr_data;
 
 public:
+    using buffer_t = std::string;
+
     CQnxResMgrImpl();
     virtual ~CQnxResMgrImpl();
     virtual void run(const std::string& path, const uint16_t amode) override;
@@ -40,7 +43,7 @@ private:
     void loop();
     dispatch_t *dpp;
     dispatch_context_t *ctp;
-    static char buf[20];
+    static buffer_t buf;
 };
 
 #endif /* SRC_CQNXRESMGRIMPL_HPP_ */
