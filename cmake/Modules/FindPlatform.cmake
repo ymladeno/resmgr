@@ -1,4 +1,0 @@
-# Purpose:
-# Find compiler path
-
-

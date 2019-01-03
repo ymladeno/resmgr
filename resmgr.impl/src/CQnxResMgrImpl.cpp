@@ -6,6 +6,7 @@
  */
 
 #include "CQnxResMgrImpl.hpp"
+
 #include <cstdlib>
 
 CQnxResMgrImpl::buffer_t CQnxResMgrImpl::buf;

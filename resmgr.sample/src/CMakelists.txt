@@ -1,0 +1,19 @@
+set(RESMGR_IMPL_DIR "${CMAKE_HOME_DIRECTORY}/../resmgr.impl/public")
+
+add_executable(resmgr 
+               ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManager.cpp)
+
+target_include_directories(resmgr PUBLIC ${RESMGR_IMPL_DIR})
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(OUTPATH "dbg/${OUTPUT_ARCH}")
+else()
+    set(OUTPATH "rel/${OUTPUT_ARCH}")
+endif()
+
+target_link_libraries(resmgr 
+                    -L${CMAKE_HOME_DIRECTORY}/../resmgr.impl/${OUTPATH}/lib -limpl)
+
+install(TARGETS resmgr RUNTIME 
+        DESTINATION ${CMAKE_HOME_DIRECTORY}/${OUTPATH}/bin)
