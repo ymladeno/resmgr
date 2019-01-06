@@ -1,0 +1,12 @@
+add_library(rescmn STATIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/impl/CQnxResMgrImpl.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/impl/CResourceManagerImpl.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/factory/CResourceMngFactory.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManager.cpp)
+
+target_include_directories(rescmn PUBLIC impl/ factory/)
+
+install(TARGETS rescmn ARCHIVE DESTINATION ${OUTPUT_ARCH}/lib)
+        
+install(FILES  CResourceManager.hpp factory/CResourceMngFactory.hpp impl/CResourceManagerImpl.hpp
+        DESTINATION ${CMAKE_HOME_DIRECTORY}/public)

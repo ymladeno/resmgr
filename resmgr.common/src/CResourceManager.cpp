@@ -7,12 +7,17 @@
 
 #include "CResourceManager.hpp"
 
-CResourceManager::CResourceManager(CResourceManagerImpl& resmgrImpl)
-: m_details{resmgrImpl} {
+namespace res {
+
+CResourceManager::CResourceManager(std::shared_ptr<impl::CResourceManagerImpl> p_resmgrImpl)
+: p_impl{p_resmgrImpl} {
 }
 
 CResourceManager::~CResourceManager() = default;
 
 void CResourceManager::run(const std::string path, const uint16_t amode) {
-    m_details.run(path, amode);
+    p_impl->run(path, amode);
 }
+
+}
+

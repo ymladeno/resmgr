@@ -7,7 +7,14 @@
 
 #include "CResourceManagerImpl.hpp"
 
+namespace res {
+namespace impl {
+
 CResourceManagerImpl::CResourceManagerImpl() = default;
 
 CResourceManagerImpl::~CResourceManagerImpl() = default;
+
+} //namespace res
+} //namespace impl
+
 

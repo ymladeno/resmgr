@@ -13,6 +13,9 @@
 #include <sys/dispatch.h>
 #include <vector>
 
+namespace res {
+namespace impl {
+
 class CQnxResMgrImpl: public CResourceManagerImpl {
 private:
     struct _resmgr_data {
@@ -45,5 +48,9 @@ private:
     dispatch_context_t *ctp;
     static buffer_t buf;
 };
+
+} //namespace res
+} //namespace impl
+
 
 #endif /* SRC_CQNXRESMGRIMPL_HPP_ */

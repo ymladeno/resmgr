@@ -6,8 +6,10 @@
  */
 
 #include "CQnxResMgrImpl.hpp"
-
 #include <cstdlib>
+
+namespace res {
+namespace impl {
 
 CQnxResMgrImpl::buffer_t CQnxResMgrImpl::buf;
 
@@ -131,7 +133,6 @@ void CQnxResMgrImpl::write(std::string& s) {
 
 }
 
-
 void CQnxResMgrImpl::init(const uint16_t& amode, resmgr_data_t& r) {
     iofunc_func_init(_RESMGR_CONNECT_NFUNCS, &r.connect_func, _RESMGR_IO_NFUNCS, &r.io_func);
     iofunc_attr_init(&r.attr, S_IFNAM | amode, 0, 0);
@@ -176,3 +177,6 @@ void CQnxResMgrImpl::loop() {
         dispatch_handler(ctp);
     }
 }
+
+} //namespace res
+} //namespace impl

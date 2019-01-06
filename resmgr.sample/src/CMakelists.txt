@@ -1,8 +1,7 @@
-set(RESMGR_IMPL_DIR "${CMAKE_HOME_DIRECTORY}/../resmgr.impl/public")
+set(RESMGR_IMPL_DIR "${CMAKE_HOME_DIRECTORY}/../resmgr.common/public")
 
 add_executable(resmgr 
-               ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-               ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManager.cpp)
+               ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 target_include_directories(resmgr PUBLIC ${RESMGR_IMPL_DIR})
 
@@ -13,7 +12,7 @@ else()
 endif()
 
 target_link_libraries(resmgr 
-                    -L${CMAKE_HOME_DIRECTORY}/../resmgr.impl/${OUTPATH}/lib -limpl)
+                    -L${CMAKE_HOME_DIRECTORY}/../resmgr.common/${OUTPATH}/lib -lrescmn)
 
 install(TARGETS resmgr RUNTIME 
         DESTINATION ${CMAKE_HOME_DIRECTORY}/${OUTPATH}/bin)

@@ -1,8 +1,0 @@
-add_library(impl STATIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/CQnxResMgrImpl.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManagerImpl.cpp)
-
-install(TARGETS impl ARCHIVE DESTINATION ${OUTPUT_ARCH}/lib)
-        
-install(FILES  CResourceManagerImpl.hpp CQnxResMgrImpl.hpp
-        DESTINATION ${CMAKE_HOME_DIRECTORY}/public)
