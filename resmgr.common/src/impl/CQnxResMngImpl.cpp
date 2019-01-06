@@ -5,15 +5,15 @@
  *      Author: YMLADENO
  */
 
-#include "CQnxResMgrImpl.hpp"
+#include "CQnxResMngImpl.hpp"
 #include <cstdlib>
 
 namespace res {
 namespace impl {
 
-CQnxResMgrImpl::buffer_t CQnxResMgrImpl::buf;
+CQnxResMngImpl::buffer_t CQnxResMngImpl::buf;
 
-CQnxResMgrImpl::CQnxResMgrImpl()
+CQnxResMngImpl::CQnxResMngImpl()
 : dpp(nullptr) {
     if ((dpp = dispatch_create()) == NULL) {
         //fprintf(stderr, "%s: Unable to allocate dispatch context.\n", __progname);
@@ -21,9 +21,9 @@ CQnxResMgrImpl::CQnxResMgrImpl()
     }
 }
 
-CQnxResMgrImpl::~CQnxResMgrImpl() = default;
+CQnxResMngImpl::~CQnxResMngImpl() = default;
 
-void CQnxResMgrImpl::run(const std::string& path, const uint16_t amode) {
+void CQnxResMngImpl::run(const std::string& path, const uint16_t amode) {
     resmgr_data_t resmgr_data;
 
     //init structure
@@ -34,11 +34,11 @@ void CQnxResMgrImpl::run(const std::string& path, const uint16_t amode) {
     loop();
 }
 
-int CQnxResMgrImpl::io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE_T *handle, void *extra) {
+int CQnxResMngImpl::io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE_T *handle, void *extra) {
     return iofunc_open_default(ctp, msg, handle, extra);
 }
 
-int CQnxResMgrImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb) {
+int CQnxResMngImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb) {
     int status;
     int nleft;
     int off;
@@ -84,7 +84,7 @@ int CQnxResMgrImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T 
     return (_RESMGR_NOREPLY);
 }
 
-int CQnxResMgrImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb) {
+int CQnxResMngImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb) {
     int status;
     size_t nbytes;
 
@@ -125,15 +125,15 @@ int CQnxResMgrImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_
     return (_RESMGR_NPARTS(0));
 }
 
-std::string CQnxResMgrImpl::read() {
+std::string CQnxResMngImpl::read() {
     return "";
 }
 
-void CQnxResMgrImpl::write(std::string& s) {
+void CQnxResMngImpl::write(std::string& s) {
 
 }
 
-void CQnxResMgrImpl::init(const uint16_t& amode, resmgr_data_t& r) {
+void CQnxResMngImpl::init(const uint16_t& amode, resmgr_data_t& r) {
     iofunc_func_init(_RESMGR_CONNECT_NFUNCS, &r.connect_func, _RESMGR_IO_NFUNCS, &r.io_func);
     iofunc_attr_init(&r.attr, S_IFNAM | amode, 0, 0);
 
@@ -147,7 +147,7 @@ void CQnxResMgrImpl::init(const uint16_t& amode, resmgr_data_t& r) {
     r.io_func.write = io_write;
 }
 
-void CQnxResMgrImpl::attach(const std::string& path, resmgr_data_t& r) {
+void CQnxResMngImpl::attach(const std::string& path, resmgr_data_t& r) {
 
     //attach device name
     if (-1 == resmgr_attach(dpp,
@@ -164,7 +164,7 @@ void CQnxResMgrImpl::attach(const std::string& path, resmgr_data_t& r) {
 }
 
 
-void CQnxResMgrImpl::loop() {
+void CQnxResMngImpl::loop() {
     //allocate context structure
     ctp = dispatch_context_alloc(dpp);
 

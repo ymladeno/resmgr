@@ -1,6 +1,7 @@
 add_library(rescmn STATIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/impl/CQnxResMgrImpl.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/impl/CQnxResMngImpl.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/impl/CResourceManagerImpl.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/impl/CUnknownResMngImpl.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/factory/CResourceMngFactory.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManager.cpp)
 

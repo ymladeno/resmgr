@@ -5,7 +5,8 @@
 
 int main() {
     res::factory::CResourceMngFactory factory;
-    std::shared_ptr<res::impl::CResourceManagerImpl> p_qnxResMngImpl = factory.createResManagerImpl(res::factory::CResourceMngFactory::ResManagerTypes::QnxResourceManager);
+    std::shared_ptr<res::impl::CResourceManagerImpl> p_qnxResMngImpl =
+            factory.createResManagerImpl(res::factory::CResourceMngFactory::ResManagerTypes::QnxResourceManager);
     res::CResourceManager resmgr(p_qnxResMngImpl);
 
     //call blocked mehtod

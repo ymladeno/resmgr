@@ -5,6 +5,8 @@
  *      Author: YMLADENO
  */
 
+#include "CQnxResMngImpl.hpp"
+#include "CUnknownResMngImpl.hpp"
 #include "CResourceMngFactory.hpp"
 
 namespace res {
@@ -13,15 +15,15 @@ namespace factory {
 CResourceMngFactory::CResourceMngFactory() = default;
 CResourceMngFactory::~CResourceMngFactory() = default;
 
-std::shared_ptr<res::impl::CResourceManagerImpl> CResourceMngFactory::createResManagerImpl(ResManagerTypes type) {
+std::shared_ptr<res::impl::CResourceManagerImpl> CResourceMngFactory::createResManagerImpl(const ResManagerTypes type) {
     std::shared_ptr<res::impl::CResourceManagerImpl> pImpl;
 
-//    if (!type.compare("qnx")) {
-//        pImlp = make_shared<CQnxResMgrImpl>();
-//    }
-//    else {
-//        pImlp = nullptr;
-//    }
+    if (type == ResManagerTypes::QnxResourceManager) {
+        pImpl = std::make_shared<res::impl::CQnxResMngImpl>();
+    }
+    else {
+        pImpl = std::make_shared<res::impl::CUnknownResMngImpl>();
+    }
 
     return pImpl;
 }

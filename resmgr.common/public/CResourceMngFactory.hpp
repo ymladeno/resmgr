@@ -22,7 +22,7 @@ public:
     };
     CResourceMngFactory();
     virtual ~CResourceMngFactory();
-    std::shared_ptr<res::impl::CResourceManagerImpl> createResManagerImpl(ResManagerTypes type);
+    std::shared_ptr<res::impl::CResourceManagerImpl> createResManagerImpl(const ResManagerTypes type);
 };
 
 } //namespace res

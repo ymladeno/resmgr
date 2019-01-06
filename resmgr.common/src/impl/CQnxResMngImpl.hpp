@@ -16,7 +16,7 @@
 namespace res {
 namespace impl {
 
-class CQnxResMgrImpl: public CResourceManagerImpl {
+class CQnxResMngImpl: public CResourceManagerImpl {
 private:
     struct _resmgr_data {
         resmgr_attr_t resmgr_attr;
@@ -29,8 +29,8 @@ private:
 public:
     using buffer_t = std::string;
 
-    CQnxResMgrImpl();
-    virtual ~CQnxResMgrImpl();
+    CQnxResMngImpl();
+    virtual ~CQnxResMngImpl();
     virtual void run(const std::string& path, const uint16_t amode) override;
 
     std::string read();
