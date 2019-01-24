@@ -6,7 +6,9 @@
  */
 
 #include "CQnxResMngImpl.hpp"
+#include "error/AttachErr.hpp"
 #include <cstdlib>
+#include <stdexcept>
 
 namespace res {
 namespace impl {
@@ -14,10 +16,10 @@ namespace impl {
 CQnxResMngImpl::buffer_t CQnxResMngImpl::buf;
 
 CQnxResMngImpl::CQnxResMngImpl()
-: dpp(nullptr) {
+: dpp(nullptr),
+  ctp(nullptr) {
     if ((dpp = dispatch_create()) == NULL) {
-        //fprintf(stderr, "%s: Unable to allocate dispatch context.\n", __progname);
-        //throw return EXIT_FAILURE;
+        throw std::runtime_error("Unable to allocate dispatch context");
     }
 }
 
@@ -158,8 +160,7 @@ void CQnxResMngImpl::attach(const std::string& path, resmgr_data_t& r) {
                             &r.connect_func,
                             &r.io_func,
                             &r.attr)) {
-        fprintf(stderr, "%s: Unable to attach name.\n", path.c_str());
-        //return EXIT_FAILURE;
+        throw AttachErr{path};
     }
 }
 
@@ -171,8 +172,7 @@ void CQnxResMngImpl::loop() {
     //start the resource manager message loop
     while(1) {
         if ((ctp = dispatch_block(ctp)) == NULL) {
-            fprintf(stderr, "block error\n");
-            //return EXIT_FAILURE;
+            throw std::runtime_error("block error");
         }
         dispatch_handler(ctp);
     }
