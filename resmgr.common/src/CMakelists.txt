@@ -2,6 +2,8 @@ add_library(rescmn STATIC
             ${CMAKE_CURRENT_SOURCE_DIR}/impl/CQnxResMngImpl.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/impl/CUnknownResMngImpl.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/factory/CResourceMngFactory.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/parser/CommandLine.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/parser/CProgramArgument.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManagerImpl.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/CResourceManager.cpp)
 
@@ -16,4 +18,6 @@ install(FILES
             CResourceManager.hpp 
             factory/CResourceMngFactory.hpp 
             CResourceManagerImpl.hpp
+            parser/CommandLine.hpp
+            parser/CProgramArgument.hpp
         DESTINATION ${CMAKE_HOME_DIRECTORY}/public)
