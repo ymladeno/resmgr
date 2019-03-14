@@ -10,7 +10,7 @@
 
 #include <string>
 
-struct AttachErr : public std::runtime_error {
+class AttachErr : public std::runtime_error {
 public:
     AttachErr(const std::string& s) : std::runtime_error{"Unable to attach name " + s} {}
     virtual ~AttachErr() = default;

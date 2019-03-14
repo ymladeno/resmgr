@@ -27,14 +27,9 @@ private:
     using resmgr_data_t = _resmgr_data;
 
 public:
-    using buffer_t = std::string;
-
     CQnxResMngImpl();
     virtual ~CQnxResMngImpl();
     virtual void run(const std::string& path, const uint16_t amode) override;
-
-    std::string read();
-    void write(std::string& s);
 
     static int io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE_T *handle, void *extra);
     static int io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb);
@@ -46,7 +41,6 @@ private:
     void loop();
     dispatch_t *dpp;
     dispatch_context_t *ctp;
-    static buffer_t buf;
 };
 
 } //namespace res

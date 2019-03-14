@@ -20,4 +20,5 @@ install(FILES
             CResourceManagerImpl.hpp
             parser/CommandLine.hpp
             parser/CProgramArgument.hpp
+            impl/data/CQnxData.hpp
         DESTINATION ${CMAKE_HOME_DIRECTORY}/public)

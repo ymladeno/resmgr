@@ -1,9 +1,12 @@
 #include "CResourceMngFactory.hpp"
 #include "CResourceManager.hpp"
 #include "CommandLine.hpp"
+#include "Callback.hpp"
+
 #include <exception>
 #include <iostream>
 #include <sstream>
+#include <functional>
 
 #define READ_WRITE_ACCESS 0x0666
 
@@ -25,12 +28,14 @@ int main(int argc, const char* argv[]) {
             return 1;
         }
 
-        std::cout << l_ini_path << std::endl;
-
+        Callback callback{};
         res::factory::CResourceMngFactory factory;
         std::shared_ptr<res::impl::CResourceManagerImpl> p_qnxResMngImpl =
                 factory.createResManagerImpl(res::factory::CResourceMngFactory::ResManagerTypes::QnxResourceManager);
         res::CResourceManager resmgr(p_qnxResMngImpl);
+
+        resmgr.initcallback("read",  std::bind(&Callback::read,  callback, std::placeholders::_1));
+        resmgr.initcallback("write", std::bind(&Callback::write, callback, std::placeholders::_1));
 
         //call blocked mehtod
         resmgr.run("/dev/sample", READ_WRITE_ACCESS);

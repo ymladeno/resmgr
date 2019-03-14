@@ -7,13 +7,12 @@
 
 #include "CQnxResMngImpl.hpp"
 #include "error/AttachErr.hpp"
+#include "data/CQnxData.hpp"
 #include <cstdlib>
 #include <stdexcept>
 
 namespace res {
 namespace impl {
-
-CQnxResMngImpl::buffer_t CQnxResMngImpl::buf;
 
 CQnxResMngImpl::CQnxResMngImpl()
 : dpp(nullptr),
@@ -41,58 +40,56 @@ int CQnxResMngImpl::io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE
 }
 
 int CQnxResMngImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb) {
-    int status;
-    int nleft;
-    int off;
-    int xtype;
-    struct _xtype_offset *xoffset;
-    int nbytes;
+    int l_status{};
+    int l_nparts{};
 
     //verify that device is opened for read
-    if ((status = iofunc_read_verify(ctp, msg, ocb, NULL)) != EOK) {
-        return status;
+    if ((l_status = iofunc_read_verify(ctp, msg, ocb, NULL)) != EOK) {
+        return l_status;
     }
 
     //check xtype
-    xtype = msg->i.xtype & _IO_XTYPE_MASK;
-    if (xtype == _IO_XTYPE_OFFSET) {
-        xoffset = (struct _xtype_offset*)(&msg->i + 1);
-        off = xoffset->offset;
+    if (msg->i.xtype & _IO_XTYPE_MASK != _IO_XTYPE_NONE) {
+    	return ENOSYS;
     }
-    else if (xtype == _IO_XTYPE_NONE) {
-        off = ocb->offset;
-    }
-    else {
-        return ENOSYS;
-    }
+
+    data_t l_data{};
+    m_callback["read"](l_data);
+
+    ocb->attr->nbytes = l_data.size();
 
     //how many bytes are left
-    nleft = buf.size() - off;
-    ocb->offset += nleft;
+    std::int64_t l_nleft = ocb->attr->nbytes - ocb->offset;
+    std::int64_t l_nbytes =std::min<int>(l_nleft, _IO_READ_GET_NBYTES(msg));
 
-    //number of bytes returning to the client
-    nbytes = std::min<int>(nleft, _IO_READ_GET_NBYTES(msg));
+    data_t l_buffer{};
+    if (l_nbytes) {
+    	SETIOV(ctp->iov, l_buffer.data() + ocb->offset, l_nbytes);
+    	_IO_SET_READ_NBYTES(ctp, l_nbytes);
 
-    //if returning data, write it to client
-    if (nbytes) {
-        MsgReply(ctp->rcvid, nbytes, static_cast<void*>(&buf.at(0)), nbytes);
+    	ocb->offset += l_nbytes;
+        l_nparts = 1;
     }
     else {
         //do not return data, just unblock client
-        MsgReply(ctp->rcvid, EOK, NULL, 0);
+    	_IO_SET_READ_NBYTES(ctp, 0);
+
+    	l_nparts = 0;
     }
 
-    //indicate we already did MsgReply to the library
-    return (_RESMGR_NOREPLY);
+    if (msg->i.nbytes > 0) {
+    	ocb->attr->flags |= IOFUNC_ATTR_ATIME;
+    }
+
+    return (_RESMGR_NPARTS(l_nparts));
 }
 
 int CQnxResMngImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb) {
-    int status;
-    size_t nbytes;
+    int l_status{};
 
     //verify writing permissions
-    if ((status = iofunc_write_verify(ctp, msg, ocb, NULL)) != EOK) {
-        return (status);
+    if ((l_status = iofunc_write_verify(ctp, msg, ocb, NULL)) != EOK) {
+        return (l_status);
     }
 
     //verify the type of input msg
@@ -101,38 +98,34 @@ int CQnxResMngImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_
     }
 
     //Extract the length of client msg
-    nbytes = _IO_WRITE_GET_NBYTES(msg);
+    off_t l_nbytes {static_cast<off_t>(_IO_WRITE_GET_NBYTES(msg))};
     //ocb->attr->nbytes = nbytes;
 
     //Filter out malicious write requests that attempt to write more data than are available in msg
-    if (nbytes > ctp->info.srcmsglen - ctp->offset - sizeof(io_write_t)) {
+    if (l_nbytes > ctp->info.srcmsglen - ctp->offset - sizeof(io_write_t)) {
         return EBADMSG;
     }
 
+    data_t l_data{};
+
     //resize buffer
-    buf.resize(nbytes);
+    l_data.resize(l_nbytes+1);
+    l_data[l_nbytes] = '\0';
 
     //Set up the number of bytes returned by client's write()
-    _IO_SET_WRITE_NBYTES(ctp, nbytes);
+    _IO_SET_WRITE_NBYTES(ctp, l_nbytes);
 
     //Reread data from the sender's data buffer
-    resmgr_msgread(ctp, static_cast<void*>(&buf.at(0)), nbytes, sizeof(msg->i));
-    //buf[nbytes] = '\0'; //NULL terminated string
-    fprintf(stdout, "Received %d bytes = %s\n", nbytes, buf.c_str());
+    resmgr_msgread(ctp, const_cast<char*>(l_data.data()), l_nbytes, sizeof(msg->i));
 
-    if (nbytes > 0) {
+    //buf[nbytes] = '\0'; //NULL terminated string
+    fprintf(stdout, "Received %d bytes = %s\n", l_nbytes, l_data.c_str());
+
+    if (l_nbytes > 0) {
         ocb->attr->flags |= IOFUNC_ATTR_MTIME | IOFUNC_ATTR_CTIME;
     }
 
     return (_RESMGR_NPARTS(0));
-}
-
-std::string CQnxResMngImpl::read() {
-    return "";
-}
-
-void CQnxResMngImpl::write(std::string& s) {
-
 }
 
 void CQnxResMngImpl::init(const uint16_t& amode, resmgr_data_t& r) {
