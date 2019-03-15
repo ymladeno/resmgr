@@ -18,8 +18,10 @@ int main(int argc, const char* argv[]) {
 
     try {
         res::parser::CommandLine cmdLine{};
-        cmdLine.add_option('c', "config", "Ini file configuration");
-        cmdLine.add_option('h', "help", "This is help");
+        cmdLine.add_option('c', "config",           "Ini file configuration");
+        cmdLine.add_option('h', "help",             "This is help");
+        cmdLine.add_option('f', "font_color",       "This is font color");
+        cmdLine.add_option('b', "background_color", "This is background color");
         cmdLine.parse(argc, argv);
 
         std::string l_ini_path = cmdLine.get_program_argument('c');
@@ -28,7 +30,8 @@ int main(int argc, const char* argv[]) {
             return 1;
         }
 
-        Callback callback{};
+        Editor editor{};
+        Callback callback{editor};
         res::factory::CResourceMngFactory factory;
         std::shared_ptr<res::impl::CResourceManagerImpl> p_qnxResMngImpl =
                 factory.createResManagerImpl(res::factory::CResourceMngFactory::ResManagerTypes::QnxResourceManager);
