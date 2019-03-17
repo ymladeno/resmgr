@@ -13,7 +13,6 @@
 #include <map>
 
 namespace res {
-namespace impl {
 
 using func_t = std::function<void(std::string&)>;
 
@@ -29,7 +28,6 @@ protected:
 };
 
 } //namespace res
-} //namespace impl
 
 
 #endif /* SRC_CRESOURCEMANAGERIMPL_HPP_ */

@@ -11,29 +11,34 @@
 #define READ_WRITE_ACCESS 0x0666
 
 int main(int argc, const char* argv[]) {
-    //CommandLineParser cmdParser(argc, argv);
-//    logi << hex;
-//    logi << "Start a resource manager";
-//    LOGI("Start a resource manager");
-
     try {
         res::parser::CommandLine cmdLine{};
         cmdLine.add_option('c', "config",           "Ini file configuration");
         cmdLine.add_option('h', "help",             "This is help");
         cmdLine.add_option('f', "font_color",       "This is font color");
         cmdLine.add_option('b', "background_color", "This is background color");
+        cmdLine.add_option('d', "debug_mode",       "This is debug mode");
         cmdLine.parse(argc, argv);
 
         std::string l_ini_path = cmdLine.get_program_argument('c');
-        if (l_ini_path == "") {
-            std::cout << "Error taking ini file\n";
-            return 1;
+        if (l_ini_path.empty()) {
+            std::cout << "No ini file\n";
         }
 
         Editor editor{};
+        const auto& l_font_color = cmdLine.get_program_argument("font_color");
+        if (!l_font_color.empty()) {
+            editor.set_font_color(l_font_color);
+        }
+
+        const auto& l_background_color = cmdLine.get_program_argument("background_color");
+        if (!l_background_color.empty()) {
+            editor.set_background_color(l_background_color);
+        }
+
         Callback callback{editor};
         res::factory::CResourceMngFactory factory;
-        std::shared_ptr<res::impl::CResourceManagerImpl> p_qnxResMngImpl =
+        std::shared_ptr<res::CResourceManagerImpl> p_qnxResMngImpl =
                 factory.createResManagerImpl(res::factory::CResourceMngFactory::ResManagerTypes::QnxResourceManager);
         res::CResourceManager resmgr(p_qnxResMngImpl);
 

@@ -16,7 +16,7 @@
 namespace res {
 namespace impl {
 
-class CQnxResMngImpl: public CResourceManagerImpl {
+class CQnxResMngImpl: public res::CResourceManagerImpl {
 private:
     struct _resmgr_data {
         resmgr_attr_t resmgr_attr;

@@ -13,7 +13,7 @@
 namespace res {
 namespace impl {
 
-class CUnknownResMngImpl: public CResourceManagerImpl {
+class CUnknownResMngImpl: public res::CResourceManagerImpl {
 public:
     CUnknownResMngImpl();
     virtual ~CUnknownResMngImpl();

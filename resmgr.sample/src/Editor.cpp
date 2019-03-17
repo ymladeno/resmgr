@@ -7,14 +7,9 @@
 
 #include "Editor.hpp"
 
-Editor::Editor() {
-	// TODO Auto-generated constructor stub
+Editor::Editor() = default;
 
-}
-
-Editor::~Editor() {
-	// TODO Auto-generated destructor stub
-}
+Editor::~Editor() = default;
 
 void Editor::set_font_color(const std::string& p_font_color) {
     auto l_iter = m_font_color.find(p_font_color);

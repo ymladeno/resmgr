@@ -15,13 +15,13 @@ namespace res {
 
 class CResourceManager {
 public:
-    CResourceManager(std::shared_ptr<impl::CResourceManagerImpl> p_resmgrImpl);
+    CResourceManager(std::shared_ptr<CResourceManagerImpl> p_resmgrImpl);
     virtual ~CResourceManager();
     void run(const std::string path, const uint16_t amode);
-    void initcallback(const std::string& p_key, const impl::func_t& p_func);
+    void initcallback(const std::string& p_key, const func_t& p_func);
 
 private:
-    std::shared_ptr<impl::CResourceManagerImpl> p_impl;
+    std::shared_ptr<CResourceManagerImpl> p_impl;
 };
 
 } //namespace res

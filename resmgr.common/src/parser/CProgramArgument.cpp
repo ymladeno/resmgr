@@ -8,36 +8,38 @@
 #include <cctype>
 #include "CProgramArgument.hpp"
 
-CProgramArgument CProgramArgument::get_command_line_argument(const std::string& p_option) {
+CProgramArgument::CProgramArgument(const std::string& p_argument) :
+m_kind{Kind::e_none},
+m_argument{} {
+    auto l_dash_pos = p_argument.find_first_not_of('-');
 
-    //long option
-    if ((p_option[0] == '-') && (p_option[1] == '-')) {
-
-        std::string delimiter = "=";
-        auto delimiter_position = p_option.find(delimiter);
-        if (delimiter_position == std::string::npos) {
-            return CProgramArgument{Kind::error};
-        }
-
-        option.config = Config::elong;
-        kind = Kind::argument;
-        option.string_value = p_option.substr(2, delimiter_position-2);
-        argument = p_option.substr(delimiter_position+1);
+    switch(l_dash_pos) {
+    case 0: {
+        //argument
+        m_kind     = Kind::e_argument;
+        m_option.clear();
+        m_argument = p_argument;
+        break;
     }
-    //short option
-    else if (p_option[0] == '-') {
-        option.config = Config::eshort;
-        kind = Kind::option;
-        option.char_value = p_option[1];
+    case 1: {
+        //short option
+        m_kind     = Kind::e_short;
+        m_option   = p_argument.substr(0, l_dash_pos);
+        m_argument.clear();
+        break;
     }
-    //argument for short option is separate string
-    else if ((kind == Kind::option) && (option.config == Config::eshort)) {
-        argument = p_option;
-        kind = Kind::argument;
+    case 2: {
+        //long option
+        m_kind     = Kind::e_long;
+        auto l_delimiter_pos = p_argument.find('=');
+        m_option   = p_argument.substr(l_dash_pos, l_delimiter_pos);
+        m_argument = p_argument.substr(l_delimiter_pos+1);
+        break;
     }
-    else {
-        kind = Kind::error;
+    default:
+        //error
+        //not expected
+        break;
     }
-    return *this;
 }
 

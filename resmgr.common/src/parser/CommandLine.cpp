@@ -6,7 +6,6 @@
  */
 
 #include "CommandLine.hpp"
-#include <iostream>
 
 namespace res {
 namespace parser {
@@ -20,9 +19,9 @@ CommandLine::~CommandLine() {
 }
 
 void CommandLine::add_option(const char l_short, const std::string& l_long, const std::string& l_description) {
-    auto l_data_iter = m_init_options.emplace(m_init_options.end(), data_t{l_short, l_long, l_description});
+    auto l_data_iter = m_container.emplace(m_container.end(), data_t{l_short, l_long, l_description});
 
-    if (l_data_iter == m_init_options.end()) {
+    if (l_data_iter == m_container.end()) {
         std::cout << "Cannot put element in m_prog_arguments\n";
     }
 
@@ -43,39 +42,61 @@ void CommandLine::add_option(const char l_short, const std::string& l_long, cons
 //option    argument
 //-c        /etc/res.ini
 void CommandLine::parse(const int argc, const char* argv[]) {
-    std::vector<std::string> vargv = arguments(argc, argv);
+    std::vector<std::string> l_command_line_vec = arguments(argc, argv);
 
-    CProgramArgument l_argument{Kind::none};
-    std::vector<CProgramArgument> v_arguments;
+    auto l_program_option_iter = m_container.end();
+    for (auto l_command_line_iter=l_command_line_vec.begin();
+            l_command_line_iter!=l_command_line_vec.end();
+            l_command_line_iter++) {
 
-    for (const auto& a : vargv) {
-        l_argument = l_argument.get_command_line_argument(a);
+        CProgramArgument l_program_argument{*l_command_line_iter};
 
-        if (l_argument.kind == Kind::option) {
-            continue;
+        if (l_program_argument.is_long_option()) {
+            const auto& l_option = l_program_argument.get_long_option();
+            auto l_option_iter = m_input_long.find(l_option);
+            if (l_option_iter != m_input_long.end()) {
+                std::cout << "Wrong long option\n";
+                continue;
+            }
+
+            const auto& l_argument = l_program_argument.get_argument();
+            auto l_temp_iter = l_command_line_iter;
+            l_temp_iter++;
+            l_command_line_vec.insert(l_temp_iter, l_argument);
+
+            l_program_option_iter = l_option_iter->second;
         }
-        else if (l_argument.kind != Kind::error) {
-            v_arguments.push_back(l_argument);
-            l_argument = {Kind::none};
+        else if (l_program_argument.is_short_option()) {
+            const auto& l_option = l_program_argument.get_short_option();
+            auto l_option_iter = m_input_short.find(l_option);
+            if (l_option_iter != m_input_short.end()) {
+                std::cout << "Wrong short option\n";
+                continue;
+            }
+            l_program_option_iter = l_option_iter->second;
         }
         else {
-            throw Config_error{};
+            //argument
+            auto& l_data = *l_program_option_iter;
+            auto& l_value = std::get<e_data_arg>(l_data);
+
+            l_value = *l_command_line_iter;
         }
     }
-
-    fill_map_arguments(v_arguments);
 }
 
 std::string CommandLine::get_program_argument(const char& p_option) {
-    return get_program_argument(std::string{p_option});
+    auto l_iter = get_container_iter(p_option, m_input_short);
+    auto& l_data = *l_iter;
+    auto l_value = std::get<e_data_arg>(l_data);
+    return l_value;
 }
 
 std::string CommandLine::get_program_argument(const std::string& p_option) {
-    auto l_iter = m_map_arguments.find(p_option);
-    if (l_iter == m_map_arguments.end()) {
-        return "";
-    }
-    return l_iter->second.argument;
+    auto l_iter = get_container_iter(p_option, m_input_long);
+    auto& l_data = *l_iter;
+    auto& l_value = std::get<e_data_arg>(l_data);
+    return l_value;
 }
 
 std::vector<std::string> CommandLine::arguments(const int argc, const char* argv[]) {
@@ -86,31 +107,5 @@ std::vector<std::string> CommandLine::arguments(const int argc, const char* argv
     return res;
 }
 
-void CommandLine::fill_map_arguments(std::vector<CProgramArgument>& v_arguments) {
-    for (auto& l_program_argument : v_arguments) {
-
-        if (l_program_argument.option.config == Config::eshort) {
-            auto l_iter = m_input_short.find(l_program_argument.option.char_value);
-            if (l_iter == m_input_short.end()) {
-                std::cout << "invalid short program option\n";
-                //throw ;
-            }
-
-            m_map_arguments[std::string{l_program_argument.option.char_value}] = l_program_argument;   //???????????
-        }
-        else if (l_program_argument.option.config == Config::elong) {
-            auto l_iter = m_input_long.find(l_program_argument.option.string_value);
-            if (l_iter == m_input_long.end()) {
-                std::cout << "invalid long program option\n";
-                //throw ;
-            }
-
-            m_map_arguments[l_program_argument.option.string_value] = l_program_argument;
-        }
-        else {
-            throw Config_error{};
-        }
-    }
-}
 } /* namespace parser */
 } /* namespace cmd */
