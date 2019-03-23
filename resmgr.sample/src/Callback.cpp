@@ -15,7 +15,9 @@ m_editor{p_editor} {
 Callback::~Callback() = default;
 
 void Callback::read(std::string& p_value) {
-	p_value = m_editor.prefix() + m_data + m_editor.postfix();
+	if (!m_data.empty()) {
+		p_value = m_editor.prefix() + m_data + m_editor.postfix();
+	}
 }
 
 void Callback::write(std::string& p_value) {

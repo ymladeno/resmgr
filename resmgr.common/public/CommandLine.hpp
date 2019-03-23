@@ -8,7 +8,7 @@
 #ifndef RESMGR_COMMON_SRC_PARSER_COMMANDLINE_HPP_
 #define RESMGR_COMMON_SRC_PARSER_COMMANDLINE_HPP_
 
-#include <vector>
+#include <list>
 #include <string>
 #include <utility>
 #include <map>
@@ -33,7 +33,7 @@ public:
                                     std::string,    //description
                                     std::string>;   //argument
 
-    using container_t = std::vector<data_t>;
+    using container_t = std::list<data_t>;
     using iterator_t  = container_t::iterator;
 
     CommandLine();
@@ -48,9 +48,9 @@ public:
 //    iterator_t find(key_t&& p_key, map_t&& p_map);
 
 private:
-    std::vector<std::string> arguments(const int argc, const char* argv[]);
+    std::list<std::string> arguments(const int argc, const char* argv[]) const;
     template<typename key_t, typename map_t>
-    iterator_t get_container_iter(key_t& p_key, const map_t& p_map);
+    iterator_t get_container_iter(key_t&& p_key, const map_t& p_map);
 
     //add options in main.cpp
     container_t m_container;

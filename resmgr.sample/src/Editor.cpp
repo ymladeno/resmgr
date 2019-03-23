@@ -7,7 +7,9 @@
 
 #include "Editor.hpp"
 
-Editor::Editor() = default;
+Editor::Editor() :
+m_prefix{} {
+}
 
 Editor::~Editor() = default;
 
@@ -16,7 +18,7 @@ void Editor::set_font_color(const std::string& p_font_color) {
     if (l_iter == m_font_color.end()) {
         //throw
     }
-    m_prefix = m_font_color[p_font_color];
+    m_prefix += m_font_color[p_font_color];
 }
 
 void Editor::set_background_color(const std::string& p_background_color) {
@@ -24,6 +26,6 @@ void Editor::set_background_color(const std::string& p_background_color) {
     if (l_iter == m_background_color.end()) {
         //throw
     }
-    m_postfix = m_background_color[p_background_color];
+    m_prefix += m_background_color[p_background_color];
 }
 

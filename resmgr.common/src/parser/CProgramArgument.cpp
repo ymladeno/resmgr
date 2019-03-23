@@ -32,7 +32,7 @@ m_argument{} {
         //long option
         m_kind     = Kind::e_long;
         auto l_delimiter_pos = p_argument.find('=');
-        m_option   = p_argument.substr(l_dash_pos, l_delimiter_pos);
+        m_option   = p_argument.substr(l_dash_pos, l_delimiter_pos-l_dash_pos);
         m_argument = p_argument.substr(l_delimiter_pos+1);
         break;
     }

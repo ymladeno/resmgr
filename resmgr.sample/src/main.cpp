@@ -42,8 +42,8 @@ int main(int argc, const char* argv[]) {
                 factory.createResManagerImpl(res::factory::CResourceMngFactory::ResManagerTypes::QnxResourceManager);
         res::CResourceManager resmgr(p_qnxResMngImpl);
 
-        resmgr.initcallback("read",  std::bind(&Callback::read,  callback, std::placeholders::_1));
-        resmgr.initcallback("write", std::bind(&Callback::write, callback, std::placeholders::_1));
+        resmgr.initcallback("read",  std::bind(&Callback::read,  &callback, std::placeholders::_1));
+        resmgr.initcallback("write", std::bind(&Callback::write, &callback, std::placeholders::_1));
 
         //call blocked mehtod
         resmgr.run("/dev/sample", READ_WRITE_ACCESS);

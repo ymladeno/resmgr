@@ -18,11 +18,12 @@ public:
 	void set_font_color(const std::string& p_font_color);
 	void set_background_color(const std::string& p_background_color);
 
-	std::string prefix() {
+	const std::string prefix() const {
 	    return m_prefix;
 	}
-	std::string postfix() {
-	    return m_postfix;
+
+	const std::string postfix() const {
+	    return RESET_COLOR;
 	}
 
 private:
@@ -51,7 +52,6 @@ private:
     static constexpr const char* RESET_COLOR = "\u001b[0m";
 
     std::string m_prefix;
-    std::string m_postfix;
 };
 
 #endif /* RESMGR_SAMPLE_SRC_EDITOR_HPP_ */

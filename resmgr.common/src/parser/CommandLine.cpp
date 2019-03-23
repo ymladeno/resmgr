@@ -6,6 +6,7 @@
  */
 
 #include "CommandLine.hpp"
+#include <iostream>
 
 namespace res {
 namespace parser {
@@ -19,19 +20,26 @@ CommandLine::~CommandLine() {
 }
 
 void CommandLine::add_option(const char l_short, const std::string& l_long, const std::string& l_description) {
-    auto l_data_iter = m_container.emplace(m_container.end(), data_t{l_short, l_long, l_description});
+    auto l_data_iter = m_container.emplace(m_container.end(), data_t{	l_short,
+    																	l_long,
+																		l_description,
+    																	std::string{}});
 
     if (l_data_iter == m_container.end()) {
         std::cout << "Cannot put element in m_prog_arguments\n";
     }
 
-    auto l_short_iter = m_input_short.emplace(std::piecewise_construct, std::forward_as_tuple(l_short), std::forward_as_tuple(l_data_iter));
+    auto l_short_iter = m_input_short.emplace(	std::piecewise_construct,
+    											std::forward_as_tuple(l_short),
+												std::forward_as_tuple(l_data_iter));
 
     if (!l_short_iter.second) {
         std::cout << "m_input_short error";
     }
 
-    auto l_long_iter = m_input_long.emplace(std::piecewise_construct, std::forward_as_tuple(l_long), std::forward_as_tuple(l_data_iter));
+    auto l_long_iter = m_input_long.emplace(std::piecewise_construct,
+    										std::forward_as_tuple(l_long),
+											std::forward_as_tuple(l_data_iter));
 
     if (!l_long_iter.second) {
         std::cout << "m_input_long error";
@@ -42,7 +50,18 @@ void CommandLine::add_option(const char l_short, const std::string& l_long, cons
 //option    argument
 //-c        /etc/res.ini
 void CommandLine::parse(const int argc, const char* argv[]) {
-    std::vector<std::string> l_command_line_vec = arguments(argc, argv);
+
+//    for(auto elem : m_container) {
+//
+//        std::cout << "std::get<0>=" << std::get<0>(elem) << std::endl;
+//        std::cout << "std::get<1>=" << std::get<1>(elem) << std::endl;
+//        std::cout << "std::get<2>=" << std::get<2>(elem) << std::endl;
+//        std::cout << "std::get<3>=" << std::get<3>(elem) << std::endl;
+//
+//        std::cout << "***********************************************\n";
+//    }
+
+    std::list<std::string> l_command_line_vec = arguments(argc, argv);
 
     auto l_program_option_iter = m_container.end();
     for (auto l_command_line_iter=l_command_line_vec.begin();
@@ -54,7 +73,7 @@ void CommandLine::parse(const int argc, const char* argv[]) {
         if (l_program_argument.is_long_option()) {
             const auto& l_option = l_program_argument.get_long_option();
             auto l_option_iter = m_input_long.find(l_option);
-            if (l_option_iter != m_input_long.end()) {
+            if (l_option_iter == m_input_long.end()) {
                 std::cout << "Wrong long option\n";
                 continue;
             }
@@ -69,7 +88,7 @@ void CommandLine::parse(const int argc, const char* argv[]) {
         else if (l_program_argument.is_short_option()) {
             const auto& l_option = l_program_argument.get_short_option();
             auto l_option_iter = m_input_short.find(l_option);
-            if (l_option_iter != m_input_short.end()) {
+            if (l_option_iter == m_input_short.end()) {
                 std::cout << "Wrong short option\n";
                 continue;
             }
@@ -99,8 +118,8 @@ std::string CommandLine::get_program_argument(const std::string& p_option) {
     return l_value;
 }
 
-std::vector<std::string> CommandLine::arguments(const int argc, const char* argv[]) {
-    std::vector<std::string> res{};
+std::list<std::string> CommandLine::arguments(const int argc, const char* argv[]) const {
+    std::list<std::string> res{};
     for(auto i=1; i<argc; i++) {
         res.push_back(argv[i]);
     }

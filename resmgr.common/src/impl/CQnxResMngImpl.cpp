@@ -54,17 +54,19 @@ int CQnxResMngImpl::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T 
     }
 
     data_t l_data{};
-    m_callback["read"](l_data);
+
+    if (!ocb->offset) {
+        m_callback["read"](l_data);
+    }
 
     ocb->attr->nbytes = l_data.size();
 
     //how many bytes are left
-    std::int64_t l_nleft = ocb->attr->nbytes - ocb->offset;
-    std::int64_t l_nbytes =std::min<int>(l_nleft, _IO_READ_GET_NBYTES(msg));
+    std::int64_t l_nleft  {ocb->attr->nbytes - ocb->offset};
+    std::int64_t l_nbytes {std::min<std::int64_t>(l_nleft, _IO_READ_GET_NBYTES(msg))};
 
-    data_t l_buffer{};
-    if (l_nbytes) {
-    	SETIOV(ctp->iov, l_buffer.data() + ocb->offset, l_nbytes);
+    if (l_nbytes > 0) {
+    	SETIOV(ctp->iov, l_data.data() + ocb->offset, l_nbytes);
     	_IO_SET_READ_NBYTES(ctp, l_nbytes);
 
     	ocb->offset += l_nbytes;
@@ -121,6 +123,7 @@ int CQnxResMngImpl::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_
     //buf[nbytes] = '\0'; //NULL terminated string
     fprintf(stdout, "Received %d bytes = %s\n", l_nbytes, l_data.c_str());
 
+    m_callback["write"](l_data);
     if (l_nbytes > 0) {
         ocb->attr->flags |= IOFUNC_ATTR_MTIME | IOFUNC_ATTR_CTIME;
     }
