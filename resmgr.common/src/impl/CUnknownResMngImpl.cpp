@@ -13,7 +13,15 @@ namespace impl {
 CUnknownResMngImpl::CUnknownResMngImpl() = default;
 CUnknownResMngImpl::~CUnknownResMngImpl() = default;
 
-void CUnknownResMngImpl::run(const std::string& path, const uint16_t amode) {
+void CUnknownResMngImpl::init(const std::string& path, const uint16_t amode) {
+
+}
+
+void CUnknownResMngImpl::initcallback(const std::string& p_key, const func_t& p_func) {
+
+}
+
+void CUnknownResMngImpl::run() {
 
 }
 

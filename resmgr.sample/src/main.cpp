@@ -40,13 +40,15 @@ int main(int argc, const char* argv[]) {
         res::factory::CResourceMngFactory factory;
         std::shared_ptr<res::CResourceManagerImpl> p_qnxResMngImpl =
                 factory.createResManagerImpl(res::factory::CResourceMngFactory::ResManagerTypes::QnxResourceManager);
+
         res::CResourceManager resmgr(p_qnxResMngImpl);
 
+        resmgr.init("/dev/sample", READ_WRITE_ACCESS);
         resmgr.initcallback("read",  std::bind(&Callback::read,  &callback, std::placeholders::_1));
         resmgr.initcallback("write", std::bind(&Callback::write, &callback, std::placeholders::_1));
 
-        //call blocked mehtod
-        resmgr.run("/dev/sample", READ_WRITE_ACCESS);
+        //call blocked method
+        resmgr.run();
         //normally never execute code after line above
     }
     catch(std::exception& e) {

@@ -9,38 +9,25 @@
 #define SRC_CQNXRESMGRIMPL_HPP_
 
 #include "CResourceManagerImpl.hpp"
-#include <sys/iofunc.h>
-#include <sys/dispatch.h>
+#include "data/CQnxResData.hpp"
 #include <vector>
 
 namespace res {
 namespace impl {
 
 class CQnxResMngImpl: public res::CResourceManagerImpl {
-private:
-    struct _resmgr_data {
-        resmgr_attr_t resmgr_attr;
-        resmgr_connect_funcs_t connect_func;
-        resmgr_io_funcs_t io_func;
-        iofunc_attr_t attr;
-    };
-    using resmgr_data_t = _resmgr_data;
-
 public:
     CQnxResMngImpl();
     virtual ~CQnxResMngImpl();
-    virtual void run(const std::string& path, const uint16_t amode) override;
 
-    static int io_open(resmgr_context_t *ctp, io_open_t *msg, RESMGR_HANDLE_T *handle, void *extra);
-    static int io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *ocb);
-    static int io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T *ocb);
+    virtual void init(const std::string& path, const uint16_t amode) override;
+    virtual void initcallback(const std::string& p_key, const func_t& p_func) override;
+    virtual void run() override;
 
 private:
-    void init(const uint16_t& amode, resmgr_data_t& r);
-    void attach(const std::string& path, resmgr_data_t& r);
-    void loop();
-    dispatch_t *dpp;
-    dispatch_context_t *ctp;
+    dispatch_t*         m_dispatch;
+    dispatch_context_t* ctp;
+    std::shared_ptr<CQnxResData> m_qnxdata;
 };
 
 } //namespace res

@@ -61,11 +61,11 @@ void CommandLine::parse(const int argc, const char* argv[]) {
 //        std::cout << "***********************************************\n";
 //    }
 
-    std::list<std::string> l_command_line_vec = arguments(argc, argv);
+    std::list<std::string> l_command_line = arguments(argc, argv);
 
     auto l_program_option_iter = m_container.end();
-    for (auto l_command_line_iter=l_command_line_vec.begin();
-            l_command_line_iter!=l_command_line_vec.end();
+    for (auto l_command_line_iter=l_command_line.begin();
+            l_command_line_iter!=l_command_line.end();
             l_command_line_iter++) {
 
         CProgramArgument l_program_argument{*l_command_line_iter};
@@ -81,7 +81,7 @@ void CommandLine::parse(const int argc, const char* argv[]) {
             const auto& l_argument = l_program_argument.get_argument();
             auto l_temp_iter = l_command_line_iter;
             l_temp_iter++;
-            l_command_line_vec.insert(l_temp_iter, l_argument);
+            l_command_line.insert(l_temp_iter, l_argument);
 
             l_program_option_iter = l_option_iter->second;
         }

@@ -17,7 +17,8 @@ class CResourceManager {
 public:
     CResourceManager(std::shared_ptr<CResourceManagerImpl> p_resmgrImpl);
     virtual ~CResourceManager();
-    void run(const std::string path, const uint16_t amode);
+    void init(const std::string path, const uint16_t amode);
+    void run();
     void initcallback(const std::string& p_key, const func_t& p_func);
 
 private:

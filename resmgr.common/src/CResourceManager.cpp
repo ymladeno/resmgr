@@ -15,8 +15,12 @@ CResourceManager::CResourceManager(std::shared_ptr<CResourceManagerImpl> p_resmg
 
 CResourceManager::~CResourceManager() = default;
 
-void CResourceManager::run(const std::string path, const uint16_t amode) {
-    p_impl->run(path, amode);
+void CResourceManager::init(const std::string path, const uint16_t amode) {
+    p_impl->init(path, amode);
+}
+
+void CResourceManager::run() {
+    p_impl->run();
 }
 
 void CResourceManager::initcallback(const std::string& p_key, const func_t& p_func) {
