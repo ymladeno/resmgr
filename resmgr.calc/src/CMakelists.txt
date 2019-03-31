@@ -1,0 +1,20 @@
+set(RESMGR_IMPL_DIR "${CMAKE_HOME_DIRECTORY}/../resmgr.common/public")
+
+add_executable(calc 
+			   ${CMAKE_CURRENT_SOURCE_DIR}/Callback.cpp
+			   ${CMAKE_CURRENT_SOURCE_DIR}/Editor.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+target_include_directories(calc PUBLIC ${RESMGR_IMPL_DIR})
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(OUTPATH "dbg/${OUTPUT_ARCH}")
+else()
+    set(OUTPATH "rel/${OUTPUT_ARCH}")
+endif()
+
+add_dependencies(calc rescmn)
+target_link_libraries(calc rescmn)
+
+install(TARGETS calc 
+        RUNTIME DESTINATION ${CMAKE_HOME_DIRECTORY}/${OUTPATH}/bin)
