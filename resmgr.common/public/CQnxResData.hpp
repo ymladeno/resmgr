@@ -13,6 +13,10 @@
 #include <string>
 #include "DataType.hpp"
 
+namespace res  {
+namespace impl {
+namespace data {
+
 class CQnxResData {
 public:
     CQnxResData();
@@ -31,8 +35,13 @@ private:
     };
     using resmgr_data_t = _resmgr_data;
 
-    resmgr_data_t m_data;
-    std::string   m_path;
+    resmgr_data_t    m_data;
+    std::string      m_path;
+    //res::impl::callback::CQnxCallbackData m_data;
 };
+
+}   //namespace data
+}   //namespace impl
+}   //namespace res
 
 #endif /* RESMGR_COMMON_SRC_IMPL_DATA_CQNXRESDATA_HPP_ */

@@ -16,7 +16,7 @@ namespace impl {
 CQnxResMngImpl::CQnxResMngImpl()
 : m_dispatch(nullptr),
   ctp(nullptr),
-  m_qnxdata{new CQnxResData} {
+  m_qnxdata{new data::CQnxResData} {
     if ((m_dispatch = dispatch_create()) == NULL) {
         throw std::runtime_error("Unable to allocate dispatch context");
     }

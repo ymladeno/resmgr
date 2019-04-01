@@ -28,5 +28,5 @@ std::shared_ptr<res::CResourceManagerImpl> CResourceMngFactory::createResManager
     return pImpl;
 }
 
-} //namespace res
 } //namespace factory
+} //namespace res

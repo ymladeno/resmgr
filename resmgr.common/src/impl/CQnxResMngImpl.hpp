@@ -27,7 +27,7 @@ public:
 private:
     dispatch_t*         m_dispatch;
     dispatch_context_t* ctp;
-    std::shared_ptr<CQnxResData> m_qnxdata;
+    std::shared_ptr<data::CQnxResData> m_qnxdata;
 };
 
 } //namespace res

@@ -9,6 +9,10 @@
 #include "CQnxResData.hpp"
 #include "error/AttachErr.hpp"
 
+namespace res  {
+namespace impl {
+namespace data {
+
 CQnxResData::CQnxResData() :
 m_data{},
 m_path{} {
@@ -51,11 +55,15 @@ void CQnxResData::register_data(dispatch_t* p_dispatch) {
                             &m_data.connect_func,
                             &m_data.io_func,
                             &m_data.attr)) {
-        throw AttachErr{m_path};
+        throw res::error::AttachErr{m_path};
     }
 }
 
 void CQnxResData::deregister_data() {
 
 }
+
+}   //namespace data
+}   //namespace impl
+}   //namespace res
 

@@ -6,6 +6,7 @@
  */
 
 #include "CQnxCallback.hpp"
+#include "CQnxCallbackData.hpp"
 #include "data/CQnxResDAta.hpp"
 
 namespace res {
@@ -40,7 +41,13 @@ int CQnxCallback::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *o
         return ENOSYS;
     }
 
-    data_t l_data{};
+    CQnxCallbackData l_callback_data{};
+    auto& l_buffer {l_callback_data.m_read};
+    auto& l_data {l_buffer->m_buffer};
+
+    if (!l_buffer) {
+        l_buffer.reset(new Read{});
+    }
 
     if (!ocb->offset) {
         m_callback["read"](l_data);

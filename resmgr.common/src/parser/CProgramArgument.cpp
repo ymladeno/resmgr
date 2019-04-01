@@ -8,6 +8,9 @@
 #include <cctype>
 #include "CProgramArgument.hpp"
 
+namespace res {
+namespace parser {
+
 CProgramArgument::CProgramArgument(const std::string& p_argument) :
 m_kind{Kind::e_none},
 m_argument{} {
@@ -42,4 +45,7 @@ m_argument{} {
         break;
     }
 }
+
+}   //namespace parser
+}   //namespace res
 

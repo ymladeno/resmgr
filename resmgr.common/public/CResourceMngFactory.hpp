@@ -25,7 +25,7 @@ public:
     std::shared_ptr<res::CResourceManagerImpl> createResManagerImpl(const ResManagerTypes type);
 };
 
-} //namespace res
 } //namespace factory
+} //namespace res
 
 #endif /* RESMGR_COMMON_SRC_FACTORY_CRESMNGFACTORY_HPP_ */

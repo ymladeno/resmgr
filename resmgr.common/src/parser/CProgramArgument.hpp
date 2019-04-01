@@ -10,6 +10,9 @@
 
 #include <string>
 
+namespace res {
+namespace parser {
+
 class CProgramArgument {
 public:
     CProgramArgument(const std::string& p_argument);
@@ -46,5 +49,7 @@ private:
     std::string m_argument;
 };
 
+}   //namespace parser
+}   //namespace res
 
 #endif /* RESMGR_COMMON_SRC_PARSER_CPROGRAMARGUMENT_HPP_ */
