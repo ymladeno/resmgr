@@ -1,7 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-project("resmgr.common")
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+project("resmgr.lib.srv")
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     message(STATUS, "Debug configuration!")
@@ -12,4 +10,4 @@ else()
 endif()
 
 add_subdirectory(src)
-
+add_subdirectory(test)

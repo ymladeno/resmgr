@@ -1,0 +1,19 @@
+if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+	set(CMANAGER_CPP  ${CMAKE_CURRENT_SOURCE_DIR}/qnx/CManager.cpp)
+	set(CMANAGER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/qnx)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "LINUX")
+	set(CMANAGER_CPP  ${CMAKE_CURRENT_SOURCE_DIR}/linux/CManager.cpp)
+	set(CMANAGER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/linux)
+endif()
+
+add_library(srvsample SHARED
+            ${CMAKE_CURRENT_SOURCE_DIR}/CProxy.cpp
+            ${CMANAGER_CPP})
+
+target_include_directories(srvsample PUBLIC 
+                           ${CMAKE_CURRENT_SOURCE_DIR} 
+                           ${CMANAGER_PATH})
+        
+install(FILES  
+        CProxy.hpp 
+        DESTINATION ${CMAKE_HOME_DIRECTORY}/public)

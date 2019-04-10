@@ -6,13 +6,24 @@
  */
 
 #include "CProxy.hpp"
+#include "CManager.hpp"
 
-CProxy::CProxy() {
-    // TODO Auto-generated constructor stub
+namespace srv {
+namespace sample {
 
+CProxy::CProxy() : m_manager{new CManager{}} {
 }
 
 CProxy::~CProxy() {
-    // TODO Auto-generated destructor stub
 }
 
+bool CProxy::write(const std::string& p_txt) {
+    return m_manager->write(p_txt);
+}
+
+bool CProxy::read(std::string& p_txt) {
+    return m_manager->read(p_txt);
+}
+
+}
+}

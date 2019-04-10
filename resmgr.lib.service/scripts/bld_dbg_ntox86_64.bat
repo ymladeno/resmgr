@@ -1,5 +1,6 @@
 @echo off
-call C:\rtc_depot\workspace\Dijkstra\dk.os.qnx700\qnxsdp-env.bat
+call C:\Projects\Dijkstra\dk.os.qnx700\qnxsdp-env.bat
+rem call C:\QNX\qnx700\qnxsdp-env.bat
 
 cd ..
 mkdir build 2> null

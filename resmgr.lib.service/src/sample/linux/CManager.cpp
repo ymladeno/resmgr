@@ -1,7 +1,7 @@
 /*
  * CManager.cpp
  *
- *  Created on: Mar 31, 2019
+ *  Created on: Apr 3, 2019
  *      Author: YMLADENO
  */
 
@@ -27,5 +27,5 @@ bool CManager::read(std::string& p_txt) {
     return true;
 }
 
-}
-}
+} /* namespace sample */
+} /* namespace  srv */

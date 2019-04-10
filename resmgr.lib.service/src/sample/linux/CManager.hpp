@@ -1,15 +1,14 @@
 /*
  * CManager.hpp
  *
- *  Created on: Mar 31, 2019
+ *  Created on: Apr 3, 2019
  *      Author: YMLADENO
  */
 
-#ifndef RESMGR_LIB_SERVICE_SRC_SAMPLE_QNX_CMANAGER_HPP_
-#define RESMGR_LIB_SERVICE_SRC_SAMPLE_QNX_CMANAGER_HPP_
+#ifndef RESMGR_LIB_SERVICE_SRC_SAMPLE_LINUX_CMANAGER_HPP_
+#define RESMGR_LIB_SERVICE_SRC_SAMPLE_LINUX_CMANAGER_HPP_
 
 #include <string>
-#include <memory>
 
 namespace srv {
 namespace sample {
@@ -22,7 +21,7 @@ public:
     bool read(std::string& p_txt);
 };
 
-}
-}
+} /* namespace srv */
+} /* namespace sample */
 
-#endif /* RESMGR_LIB_SERVICE_SRC_SAMPLE_QNX_CMANAGER_HPP_ */
+#endif /* RESMGR_LIB_SERVICE_SRC_SAMPLE_LINUX_CMANAGER_HPP_ */
