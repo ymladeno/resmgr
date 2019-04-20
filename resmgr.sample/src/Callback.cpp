@@ -15,8 +15,12 @@ m_editor{p_editor} {
 Callback::~Callback() = default;
 
 void Callback::read(std::string& p_value) {
-	if (!m_data.empty()) {
+	if (m_editor.is_colorful()) {
 		p_value = m_editor.prefix() + m_data + m_editor.postfix();
+	}
+	else
+	{
+		p_value = m_data;
 	}
 }
 

@@ -6,25 +6,41 @@
  */
 
 #include "CManager.hpp"
+#include "detail/HelperFunctions.hpp"
 
 namespace srv {
 namespace sample {
 
-CManager::CManager() {
-    // TODO Auto-generated constructor stub
-
+CManager::CManager() : m_path("/dev/sample") {
 }
 
-CManager::~CManager() {
-    // TODO Auto-generated destructor stub
-}
+CManager::~CManager()  = default;
 
 bool CManager::write(const std::string& p_txt) {
-    return true;
+    bool l_ret {false};
+
+    try {
+        write_line(m_path, p_txt);
+        l_ret = true;
+    }
+    catch(...) {
+
+    }
+
+    return l_ret;
 }
 
 bool CManager::read(std::string& p_txt) {
-    return true;
+    bool l_ret {false};
+
+    try {
+        p_txt = read_line(m_path);
+    }
+    catch(...) {
+
+    }
+
+    return l_ret;
 }
 
 }

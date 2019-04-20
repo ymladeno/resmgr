@@ -42,12 +42,13 @@ int CQnxCallback::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *o
     }
 
     CQnxCallbackData l_callback_data{};
-    auto& l_buffer {l_callback_data.m_read};
-    auto& l_data {l_buffer->m_buffer};
+    auto& l_buffer = l_callback_data.m_read;
 
     if (!l_buffer) {
         l_buffer.reset(new Read{});
     }
+
+    auto& l_data   = l_buffer->m_buffer;
 
     if (!ocb->offset) {
         m_callback["read"](l_data);

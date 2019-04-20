@@ -13,21 +13,21 @@ struct Open {
 };
 
 struct Read {
-    std::string m_buffer;
+    std::string  m_buffer;
     std::int32_t m_errno;
 };
 
 struct Write {
-    std::string m_buffer;
+    std::string  m_buffer;
     std::int32_t m_errno;
 };
 
 struct CQnxCallbackData {
     //connect
-    std::unique_ptr<Open> m_open;
+    std::unique_ptr<Open>  m_open;
 
     //io
-    std::unique_ptr<Read> m_read;
+    std::unique_ptr<Read>  m_read;
     std::unique_ptr<Write> m_write;
 };
 

@@ -20,6 +20,9 @@ public:
     virtual ~CManager();
     bool write(const std::string& p_txt);
     bool read(std::string& p_txt);
+
+private:
+    std::string m_path;
 };
 
 }

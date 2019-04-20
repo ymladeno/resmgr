@@ -26,6 +26,10 @@ public:
 	    return RESET_COLOR;
 	}
 
+	bool is_colorful() const {
+		return !m_prefix.empty();
+	}
+
 private:
 	std::map<std::string, std::string> m_font_color = {
         {"black",   "\u001b[30m"},
