@@ -22,6 +22,14 @@ public:
     bool write(const std::string& p_txt);
     bool read(std::string& p_txt);
 
+    //dcmd
+    bool set_background_color();
+    bool set_font();
+    bool set_font_color();
+    bool get_background_color();
+    bool get_font();
+    bool get_font_color();
+
 private:
     std::unique_ptr<CManager> m_manager;
 };

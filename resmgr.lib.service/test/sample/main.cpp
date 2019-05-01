@@ -10,10 +10,16 @@
 
 int main() {
     srv::sample::CProxy proxy{};
+
+    std::string l_write{"haha"};
+    std::cout << "Write: " << l_write << std::endl;
     proxy.write("haha");
-    std::string s{};
-    proxy.read(s);
-    std::cout << s << std::endl;
+
+    std::string l_read{};
+    proxy.read(l_read);
+    std::cout << "Read: " << l_read << std::endl;
+
+    proxy.set_font_color(Blue);
+    proxy.write("This has to be in blue color");
     return 0;
 }
-
