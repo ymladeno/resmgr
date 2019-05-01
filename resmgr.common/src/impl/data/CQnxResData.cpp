@@ -34,9 +34,9 @@ void CQnxResData::init(const std::string& path, const uint16_t amode) {
 
     //add my own functions
     m_data.connect_func.open = res::impl::callback::CQnxCallback::io_open;
-    m_data.io_func.read  = res::impl::callback::CQnxCallback::io_read;
-    m_data.io_func.write = res::impl::callback::CQnxCallback::io_write;
-
+    m_data.io_func.read  	 = res::impl::callback::CQnxCallback::io_read;
+    m_data.io_func.write	 = res::impl::callback::CQnxCallback::io_write;
+    m_data.io_func.devctl    = res::impl::callback::CQnxCallback::io_devctl;
     m_path = path;
 }
 

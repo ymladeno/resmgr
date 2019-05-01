@@ -18,14 +18,13 @@ target_include_directories(rescmn PUBLIC
 install(TARGETS rescmn 
         EXPORT ResCommon
         ARCHIVE DESTINATION ${OUTPUT_ARCH}/lib)
-        
+
 install(FILES  
-        CResourceManager.hpp 
-        factory/CResourceMngFactory.hpp 
+        CResourceManager.hpp
         CResourceManagerImpl.hpp
-        parser/CommandLine.hpp
-        parser/CommandLine.ipp
-        parser/CProgramArgument.hpp
-        impl/data/CQnxResData.hpp
-        impl/data/DataType.hpp
-        DESTINATION ${CMAKE_HOME_DIRECTORY}/public)
+        DESTINATION ${CMAKE_HOME_DIRECTORY}/public/src)
+
+add_subdirectory(devctl)
+add_subdirectory(factory)
+add_subdirectory(impl)
+add_subdirectory(parser)

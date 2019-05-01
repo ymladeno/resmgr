@@ -29,7 +29,7 @@ void CQnxResMngImpl::init(const std::string& path, const uint16_t amode) {
     m_qnxdata->register_data(m_dispatch);
 }
 
-void CQnxResMngImpl::initcallback(const std::string& p_key, const func_t& p_func) {
+void CQnxResMngImpl::initcallback(const std::string& p_key, const data::func_t& p_func) {
     m_qnxdata->initcallback(p_key, p_func);
 }
 
@@ -46,5 +46,5 @@ void CQnxResMngImpl::run() {
     }
 }
 
-} //namespace res
 } //namespace impl
+} //namespace res

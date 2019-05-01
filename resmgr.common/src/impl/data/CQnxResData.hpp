@@ -11,7 +11,7 @@
 #include <sys/iofunc.h>
 #include <sys/dispatch.h>
 #include <string>
-#include "DataType.hpp"
+#include "CQnxCallbackData.hpp"
 
 namespace res  {
 namespace impl {

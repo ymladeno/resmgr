@@ -1,6 +1,6 @@
-#include "CResourceMngFactory.hpp"
+#include "factory/CResourceMngFactory.hpp"
 #include "CResourceManager.hpp"
-#include "CommandLine.hpp"
+#include "parser/CommandLine.hpp"
 #include "Callback.hpp"
 
 #include <exception>
@@ -44,8 +44,9 @@ int main(int argc, const char* argv[]) {
         res::CResourceManager resmgr(p_qnxResMngImpl);
 
         resmgr.init("/dev/sample", READ_WRITE_ACCESS);
-        resmgr.initcallback("read",  std::bind(&Callback::read,  &callback, std::placeholders::_1));
-        resmgr.initcallback("write", std::bind(&Callback::write, &callback, std::placeholders::_1));
+        resmgr.initcallback("read",   std::bind(&Callback::read,   &callback, std::placeholders::_1));
+        resmgr.initcallback("write",  std::bind(&Callback::write,  &callback, std::placeholders::_1));
+        resmgr.initcallback("devctl", std::bind(&Callback::devctl, &callback, std::placeholders::_1));
 
         //call blocked method
         resmgr.run();

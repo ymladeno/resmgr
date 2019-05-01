@@ -6,14 +6,19 @@
  */
 
 #include "CQnxCallback.hpp"
-#include "CQnxCallbackData.hpp"
+#include "data/CQnxCallbackData.hpp"
 #include "data/CQnxResDAta.hpp"
+
+#include <devctl.h>
 
 namespace res {
 namespace impl {
 namespace callback {
 
-std::map<std::string, func_t> CQnxCallback::m_callback;
+std::map<std::string, res::impl::data::func_t> CQnxCallback::m_callback;
+
+template<typename type_t>
+struct XXX;
 
 CQnxCallback::CQnxCallback() {
     // TODO Auto-generated constructor stub
@@ -41,17 +46,16 @@ int CQnxCallback::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *o
         return ENOSYS;
     }
 
-    CQnxCallbackData l_callback_data{};
+    res::impl::data::CQnxCallbackData l_callback_data{};
     auto& l_buffer = l_callback_data.m_read;
 
     if (!l_buffer) {
-        l_buffer.reset(new Read{});
+        l_buffer.reset(new res::impl::data::Read{});
     }
-
-    auto& l_data   = l_buffer->m_buffer;
+    auto& l_data   = l_buffer->m_data;
 
     if (!ocb->offset) {
-        m_callback["read"](l_data);
+        m_callback["read"](l_callback_data);
     }
 
     ocb->attr->nbytes = l_data.size();
@@ -70,7 +74,6 @@ int CQnxCallback::io_read(resmgr_context_t *ctp, io_read_t *msg, RESMGR_OCB_T *o
     else {
         //do not return data, just unblock client
         _IO_SET_READ_NBYTES(ctp, 0);
-
         l_nparts = 0;
     }
 
@@ -103,7 +106,12 @@ int CQnxCallback::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T 
         return EBADMSG;
     }
 
-    data_t l_data{};
+    res::impl::data::CQnxCallbackData l_callback_data{};
+    auto& l_buffer = l_callback_data.m_write;
+    if(!l_buffer) {
+        l_buffer.reset(new res::impl::data::Write{});
+    }
+    auto& l_data = l_buffer->m_data;
 
     //resize buffer
     l_data.resize(l_nbytes+1);
@@ -118,7 +126,8 @@ int CQnxCallback::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T 
     //buf[nbytes] = '\0'; //NULL terminated string
     fprintf(stdout, "Received %d bytes = %s\n", l_nbytes, l_data.c_str());
 
-    m_callback["write"](l_data);
+    m_callback["write"](l_callback_data);
+
     if (l_nbytes > 0) {
         ocb->attr->flags |= IOFUNC_ATTR_MTIME | IOFUNC_ATTR_CTIME;
     }
@@ -126,7 +135,51 @@ int CQnxCallback::io_write(resmgr_context_t *ctp, io_write_t *msg, RESMGR_OCB_T 
     return (_RESMGR_NPARTS(0));
 }
 
-void CQnxCallback::initcallback(const std::string& p_key, const func_t& p_func) {
+int CQnxCallback::io_devctl(resmgr_context_t *ctp, io_devctl_t *msg, RESMGR_OCB_T *ocb) {
+    std::uint32_t l_status{EOK};
+
+    //check system devctl's
+    if ((l_status = iofunc_devctl_default(ctp, msg, ocb)) != _RESMGR_DEFAULT) {
+        return l_status;
+    }
+
+    std::size_t l_sz_msg   {sizeof(msg)     };
+    std::size_t l_sz_imsg  {sizeof(msg->i)  };
+    std::size_t l_sz_req   {get_device_size(msg->i.dcmd)};
+    auto l_sz_dst = ctp->info.dstmsglen;
+    auto l_sz_src = ctp->info.srcmsglen;
+
+    //read coming msg
+    res::impl::data::CQnxCallbackData l_callback_data{};
+    auto& l_devctl = l_callback_data.m_devctl;
+
+    if (!l_devctl) {
+        l_devctl.reset(new res::impl::data::Devctl{});
+    }
+    l_devctl->m_i_dcmd    = msg->i.dcmd;
+    l_devctl->m_i_bytes   = msg->i.nbytes;
+    l_devctl->m_o_bytes   = 0;
+    l_devctl->m_o_ret_val = 0;
+
+    if (l_sz_req == 0) {
+        l_devctl->m_io_data = nullptr;
+    }
+    else {
+        l_devctl->m_io_data =_DEVCTL_DATA(msg->i);
+    }
+    //std::string& l_data = l_devctl->m_io_data;
+
+//    //call callback to handle custom command
+//    //...
+    //m_callback["devctl"](l_data);
+//
+//    //clear return buffer
+//    memset(ctp->msg.o, 0, sizeof(ctp->msg.o));
+//    SETIOV(ctp->iov, reply, sizeof(*reply) + l_nbytes);
+    return _RESMGR_NPARTS(1);
+}
+
+void CQnxCallback::initcallback(const std::string& p_key, const res::impl::data::func_t& p_func) {
     m_callback[p_key] = p_func;
 }
 

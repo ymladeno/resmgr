@@ -8,19 +8,19 @@
 #ifndef RESMGR_SAMPLE_SRC_CALLBACK_HPP_
 #define RESMGR_SAMPLE_SRC_CALLBACK_HPP_
 
-#include "CQnxData.hpp"
+#include "impl/data/CQnxCallbackData.hpp"
 #include "Editor.hpp"
-#include <string>
 
 class Callback {
 public:
 	Callback(Editor& p_editor);
 	virtual ~Callback();
-	void read(std::string& p_value);
-	void write(std::string& p_value);
+	void read  (res::impl::data::data_t& p_callbackData);
+	void write (res::impl::data::data_t& p_callbackData);
+	void devctl(res::impl::data::data_t& p_callbackData);
 
 private:
-	data_t  m_data;
+	std::string  m_data;
 	Editor& m_editor;
 };
 

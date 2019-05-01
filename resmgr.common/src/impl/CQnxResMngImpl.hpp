@@ -21,7 +21,7 @@ public:
     virtual ~CQnxResMngImpl();
 
     virtual void init(const std::string& path, const uint16_t amode) override;
-    virtual void initcallback(const std::string& p_key, const func_t& p_func) override;
+    virtual void initcallback(const std::string& p_key, const data::func_t& p_func) override;
     virtual void run() override;
 
 private:

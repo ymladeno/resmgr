@@ -19,7 +19,7 @@ public:
     virtual ~CResourceManager();
     void init(const std::string path, const uint16_t amode);
     void run();
-    void initcallback(const std::string& p_key, const func_t& p_func);
+    void initcallback(const std::string& p_key, const impl::data::func_t& p_func);
 
 private:
     std::shared_ptr<CResourceManagerImpl> p_impl;

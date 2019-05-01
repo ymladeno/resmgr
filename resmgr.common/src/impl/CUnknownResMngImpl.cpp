@@ -17,7 +17,7 @@ void CUnknownResMngImpl::init(const std::string& path, const uint16_t amode) {
 
 }
 
-void CUnknownResMngImpl::initcallback(const std::string& p_key, const func_t& p_func) {
+void CUnknownResMngImpl::initcallback(const std::string& p_key, const data::func_t& p_func) {
 
 }
 

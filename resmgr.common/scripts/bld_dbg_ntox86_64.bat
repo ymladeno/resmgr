@@ -5,6 +5,8 @@ cd ..
 mkdir build 2> null
 rm null
 
+rm -rf public
+
 cd build
 rm -rf *
 

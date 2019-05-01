@@ -23,7 +23,7 @@ void CResourceManager::run() {
     p_impl->run();
 }
 
-void CResourceManager::initcallback(const std::string& p_key, const func_t& p_func) {
+void CResourceManager::initcallback(const std::string& p_key, const impl::data::func_t& p_func) {
 	p_impl->initcallback(p_key, p_func);
 }
 
